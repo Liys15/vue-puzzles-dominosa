@@ -8,10 +8,13 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Confetti: typeof import('./src/components/Confetti.vue')['default']
+    DominosaBlock: typeof import('./src/components/DominosaBlock.vue')['default']
+    DominosaBoard: typeof import('./src/components/DominosaBoard.vue')['default']
     InstructionPage: typeof import('./src/components/InstructionPage.vue')['default']
     Modal: typeof import('./src/components/Modal.vue')['default']
     ModalsLayer: typeof import('./src/components/ModalsLayer.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
+    NumIcon: typeof import('./src/components/NumIcon.vue')['default']
     Settings: typeof import('./src/components/Settings.vue')['default']
     TheCounter: typeof import('./src/components/TheCounter.vue')['default']
     TheFooter: typeof import('./src/components/TheFooter.vue')['default']

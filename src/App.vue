@@ -1,13 +1,13 @@
 <template>
   <main
-    font-sans h-full p-0
+    font-sans h-full p-0 basetext
     flex="~ col" items-center
   >
     <Navbar />
 
-    <TheCounter :initial="0" my-6 />
+    <DominosaBoard my-6 />
 
-    <TheFooter />
+    <TheFooter absolute bottom-0/>
 
     <ModalsLayer />
 
