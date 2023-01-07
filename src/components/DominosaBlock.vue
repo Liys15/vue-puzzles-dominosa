@@ -1,16 +1,20 @@
 <script setup lang="ts">
 
-import { DominosaBlock } from '~/types';
+import { Direction, DominosaBlock } from '~/types';
 
-const blockcontrol = ref()
+const blockEl = ref()
 const { x, y } = useMouse()
 
 const props = defineProps<{
   block: DominosaBlock
 }>()
 
+const emit = defineEmits<{
+  (e: 'changeDomino', withdirection: Direction): void
+}>()
+
 function handleClick(x:number, y:number) {
-  const el: HTMLDivElement = blockcontrol.value
+  const el: HTMLDivElement = blockEl.value
   const x0 = el.getBoundingClientRect().x
   const y0 = el.getBoundingClientRect().y
   const w = el.getBoundingClientRect().width
@@ -18,26 +22,18 @@ function handleClick(x:number, y:number) {
 
   if ((y-y0)/h <= (x-x0)/w) {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      console.log('top');
-      props.block.isDominosa = true
-      props.block.withDirection = 'top'
+      emit('changeDomino', 'top')
     }
     else {
-      console.log('right');
-      props.block.isDominosa = true
-      props.block.withDirection = 'right'
+      emit('changeDomino', 'right')
     }
   }
   else {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      console.log('left');
-      props.block.isDominosa = true
-      props.block.withDirection = 'left'
+      emit('changeDomino', 'left')
     }
     else {
-      console.log('bottom');
-      props.block.isDominosa = true
-      props.block.withDirection = 'bottom'
+      emit('changeDomino', 'bottom')
     }
   }
 }
@@ -73,7 +69,7 @@ function getClass() {
       :class="getClass()"
     />
     <div
-      ref="blockcontrol"
+      ref="blockEl"
       absolute w-full h-full top-0 left-0 z-10
       @click="handleClick(x,y)"
     />
@@ -86,10 +82,5 @@ function getClass() {
   width: 70%;
   height: 70%;
   margin: 15%;
-}
-
-.right {
-  background-color: black;
-  color: white;
 }
 </style>
