@@ -15,7 +15,7 @@ const board = ref(Array.from(
 </script>
 
 <template>
-  <div b-1 rd b-gray-700 dark:b-black bg-gray-100 dark:bg-gray-600>
+  <div b-1 b-bottom-left-r b-gray-700 dark:b-black bg-gray-100 dark:bg-gray-600>
     <div v-for="(row, y) in board" :key="y" flex="~">
       <DominosaBlock
         v-for="(block, x) in row" :key="x"

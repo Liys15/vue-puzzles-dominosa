@@ -49,16 +49,16 @@ function getClass() {
   let varCss = 'left-1 top-1'
   switch (props.block.withDirection) {
     case 'top':
-      varCss = 'top-0 left-1'
+      varCss = 'top-0 left-1 b-bl-r-5 b-br-r-5'
       break;
     case 'bottom':
-      varCss = 'bottom-0 left-1'
+      varCss = 'bottom-0 left-1 b-tl-r-5 b-tr-r-5'
       break;
     case 'left':
-      varCss = 'left-0 top-1'
+      varCss = 'left-0 top-1 b-tr-r-5 b-br-r-5'
       break;
     case 'right':
-      varCss = 'right-0 top-1'
+      varCss = 'right-0 top-1 b-tl-r-5 b-bl-r-5'
       break;
   }
   return `${baseCss} ${varCss}`

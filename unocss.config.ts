@@ -30,6 +30,19 @@ export default defineConfig({
       },
     }),
   ],
+  rules: [
+    [/^(?:border|b)-(tl|tr|bl|br)-(r)(?:-(\d+))?/, (match) => {
+      console.log(match[1], match[3]);
+      if (match[1] === 'tl')
+        return { 'border-top-left-radius': `${match[3]}px` }
+      else if (match[1] === 'tr')
+        return { 'border-top-right-radius': `${match[3]}px` }
+      else if (match[1] === 'bl')
+        return { 'border-bottom-left-radius': `${match[3]}px` }
+      else if (match[1] === 'br')
+        return { 'border-bottom-right-radius' : `${match[3]}px` }
+    }],
+  ]
   // transformers: [
   //   transformerDirectives(),
   //   transformerVariantGroup(),
