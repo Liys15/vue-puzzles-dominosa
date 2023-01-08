@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'changeDomino', withdirection: Direction): void
+  (e: 'changeDomino', {b, d}: {b: DominosaBlock, d: Direction}): void
 }>()
 
 function handleClick(x:number, y:number) {
@@ -22,18 +22,18 @@ function handleClick(x:number, y:number) {
 
   if ((y-y0)/h <= (x-x0)/w) {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      emit('changeDomino', 'top')
+      emit('changeDomino', { b: props.block, d: 'top'})
     }
     else {
-      emit('changeDomino', 'right')
+      emit('changeDomino', { b: props.block, d: 'right'})
     }
   }
   else {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      emit('changeDomino', 'left')
+      emit('changeDomino', { b: props.block, d: 'left'})
     }
     else {
-      emit('changeDomino', 'bottom')
+      emit('changeDomino', { b: props.block, d: 'bottom'})
     }
   }
 }
@@ -73,7 +73,7 @@ function getClass() {
       absolute w-full h-full top-0 left-0 z-10
       @click="handleClick(x,y)"
     />
-    <NumIcon :num="props.block.num" />
+    <NumIcon :num="props.block.id" />
   </div>
 </template>
 

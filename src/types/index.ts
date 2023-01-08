@@ -1,7 +1,9 @@
 export type GameState = 'play' | 'won' | 'lost'
 
 export interface DominosaBlock {
-  num: number
+  id: number
+  x: number
+  y:number
   isDominosa: boolean
   withDirection: Direction | undefined
 }
