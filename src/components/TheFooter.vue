@@ -13,7 +13,7 @@
       <span mx-2 > / </span>
       <a
         icon-btn
-        href="https://github.com/Liys15/">
+        href="https://github.com/Liys15/vue-puzzles-dominosa">
         Source Code
       </a>
   </nav>
