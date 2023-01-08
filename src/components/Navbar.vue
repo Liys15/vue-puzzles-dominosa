@@ -15,7 +15,7 @@ function openHelp() {
       absolute text-2xl tracking-0.5
       w-full h-full ma py2 px2 text-center
     >
-      Puzzle Name
+      Dominosa
     </div>
     <div flex items-center justify-between text-xl ma py2 pt4 px2>
       <div flex items-center>

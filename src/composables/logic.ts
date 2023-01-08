@@ -22,12 +22,16 @@ function reverseDirection(from: Direction): Direction {
 }
 
 export class Play {
-  width: number
-  height: number
-  dominosaCards: [number, number][]
-  board: Ref<DominosaBlock[][]>
+  width: number = 0
+  height: number = 0
+  dominosaCards: [number, number][] = []
+  board: Ref<DominosaBlock[][]> = ref([])
 
   constructor(setting: SettingType) {
+    this.reset(setting)
+  }
+
+  reset(setting: SettingType) {
     const n = setting.orderNum
     this.width = n+2
     this.height = n+1
@@ -36,30 +40,28 @@ export class Play {
       for (let j=i; j<=n; j++)
         this.dominosaCards.push([i, j])
     this.dominosaCards.sort(() => Math.random()-0.5)
-    this.board = ref(Array.from(
+    this.board.value = Array.from(
       {length: this.height},
       (_, y) => Array.from(
         {length: this.width},
         (_,x) : DominosaBlock =>({
-          id: Math.floor(Math.random()*10),
+          id: 0,
           x,
           y,
           isDominosa: false,
           withDirection: undefined
         })
       )
-    ))
-    this.reset(setting)
+    )
+    this.generateGame()
   }
 
-  reset(setting: SettingType) {
-    console.log(this.dominosaCards);
+  private generateGame() {
     let idx = 0
     for (let i=0; i<this.width; i++) {
       for (let j=0; j<this.height; j++) {
         const b = this.board.value[j][i]
         if (b.isDominosa) continue
-        console.log('@@@',i,j);
         const siblings: Direction[] = []
         directionMap.forEach(
           (_, d) => {

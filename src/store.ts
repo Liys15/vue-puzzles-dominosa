@@ -1,3 +1,5 @@
 import { SettingType } from "./types";
 
-export const setting = useStorage< SettingType | undefined>('vue-puzzles-setting', undefined)
+// const initSetting:SettingType =
+
+export const setting = useStorage<SettingType>('vue-puzzles-setting', {orderNum: 0})
