@@ -1,5 +1,5 @@
 <template>
-  <nav text-xl my-6 inline-flex gap-1>
+  <nav text-xl my-6 inline-flex gap-1 select-none>
       <span>Made by</span>
       <a
       icon-btn inline-flex items-center mx-1
@@ -12,8 +12,7 @@
       </a>
       <span mx-2 > / </span>
       <a
-        opacity-75
-        hover:opacity-100 hover:text-teal-600
+        icon-btn
         href="https://github.com/Liys15/">
         Source Code
       </a>
