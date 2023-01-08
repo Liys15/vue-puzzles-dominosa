@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Play } from '~/composables';
 
-const play = new Play({orderNum: 3})
+const play = new Play({orderNum: 2})
 
 function handleClick(v: any) {
   play.changeDominosa(v as any)
