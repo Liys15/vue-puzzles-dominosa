@@ -41,20 +41,20 @@ function handleClick(x:number, y:number) {
 function getClass() {
   if (!props.block.isDominosa)
     return
-  const baseCss = 'w-10 h-10 bg-black'
+  const baseCss = 'w-14 h-14 bg-black'
   let varCss = 'left-1 top-1'
   switch (props.block.withDirection) {
     case 'top':
-      varCss = 'top-0 left-1 b-bl-r-5 b-br-r-5'
+      varCss = 'top-0 left-0.5 b-bl-r-5 b-br-r-5'
       break;
     case 'bottom':
-      varCss = 'bottom-0 left-1 b-tl-r-5 b-tr-r-5'
+      varCss = 'bottom-0 left-0.5 b-tl-r-5 b-tr-r-5'
       break;
     case 'left':
-      varCss = 'left-0 top-1 b-tr-r-5 b-br-r-5'
+      varCss = 'left-0 top-0.5 b-tr-r-5 b-br-r-5'
       break;
     case 'right':
-      varCss = 'right-0 top-1 b-tl-r-5 b-bl-r-5'
+      varCss = 'right-0 top-0.5 b-tl-r-5 b-bl-r-5'
       break;
   }
   return `${baseCss} ${varCss}`
@@ -68,19 +68,23 @@ function getClass() {
       absolute
       :class="getClass()"
     />
+    <NumIcon :num="props.block.id" />
     <div
       ref="blockEl"
       absolute w-full h-full top-0 left-0 z-10
       @click="handleClick(x,y)"
     />
-    <NumIcon :num="props.block.id" />
   </div>
 </template>
 
-<style scoped>
+<style>
 .num-icon {
   width: 70%;
   height: 70%;
   margin: 15%;
+}
+
+.bg-black + div {
+  color: white
 }
 </style>

@@ -38,19 +38,6 @@ const board = ref(Array.from(
   )
 ))
 
-function getSiblings(b: DominosaBlock) {
-  const siblings: (DominosaBlock | undefined)[] = []
-  directionMap.forEach(([dx, dy]) => {
-    const x = b.x + dx
-    const y = b.y + dy
-    if (x<0 || x>=width || y<0 || y>=height)
-      siblings.push(undefined)
-    else
-      siblings.push(board.value[y][x])
-  })
-  return siblings
-}
-
 function getNeighbor(b: DominosaBlock, d: Direction) {
   const x = b.x + directionMap.get(d)![0]
   const y = b.y + directionMap.get(d)![1]
@@ -61,7 +48,6 @@ function getNeighbor(b: DominosaBlock, d: Direction) {
 }
 
 function handleClick({b, d} : {b:DominosaBlock, d:Direction}) {
-  console.log('handle click: ', d);
   const bw = getNeighbor(b, d)
   if (!bw) return
   if (!b.isDominosa) {

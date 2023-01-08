@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div w-full h-full text-2xl flex items-center justify-center>
+  <div w-full h-full text-3xl flex items-center justify-center>
     <template v-if="num === 0">
       <div i-carbon-number-0 />
     </template>
