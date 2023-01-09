@@ -1,5 +1,5 @@
-import { SettingType } from "./types";
+import { DominosaBlock, SettingType } from "./types";
 
-// const initSetting:SettingType =
+export const setting = useStorage<SettingType>('vue-puzzles-dominosa-setting', {orderNum: 0})
 
-export const setting = useStorage<SettingType>('vue-puzzles-setting', {orderNum: 0})
+// export const state = useStorage<Record<number, DominosaBlock[][]>>('vue-puzzles-dominosa-board', {})

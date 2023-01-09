@@ -21,6 +21,11 @@ function reverseDirection(from: Direction): Direction {
   }
 }
 
+function pickOne<T>(arr: T[]) {
+  const idx = Math.floor(Math.random()*arr.length)
+  return arr.splice(idx, 1)[0]
+}
+
 export class Play {
   width: number = 0
   height: number = 0
@@ -40,65 +45,98 @@ export class Play {
       for (let j=i; j<=n; j++)
         this.dominosaCards.push([i, j])
     this.dominosaCards.sort(() => Math.random()-0.5)
-    this.board.value = Array.from(
-      {length: this.height},
-      (_, y) => Array.from(
-        {length: this.width},
-        (_,x) : DominosaBlock =>({
+    this.board.value = this.initBoard()
+    this.generateGame()
+  }
+
+  private initBoard() {
+    const board =  Array.from({length: this.height},
+      (_, y): DominosaBlock[] => Array.from({length: this.width},
+        (_,x): DominosaBlock => ({
           id: 0,
           x,
           y,
           isDominosa: false,
-          withDirection: undefined
+          correctDirection: undefined,
+          withDirection: undefined,
+          getNeighbor: (d:Direction) => {
+            const x1 = x + directionMap.get(d)![0]
+            const y1 = y + directionMap.get(d)![1]
+            if (x1<0 || x1>=this.width || y1<0 || y1>=this.height)
+              return undefined
+            else
+              return board[y1][x1]
+          }
         })
       )
     )
-    this.generateGame()
+    return board
+  }
+
+  private getAvaiableDirection(b: DominosaBlock) {
+    const siblingPaths: Direction[] = []
+    directionMap.forEach((_, d) => {
+      const bn = b.getNeighbor(d)
+      if (!bn || bn.isDominosa) return
+      siblingPaths.push(d)
+    })
+    return siblingPaths
+  }
+
+  private getNextBlock():DominosaBlock | undefined {
+    const flatBoard = this.board.value.flat()
+    return flatBoard.find((b) => !b.isDominosa)
   }
 
   private generateGame() {
-    let idx = 0
-    for (let i=0; i<this.width; i++) {
-      for (let j=0; j<this.height; j++) {
-        const b = this.board.value[j][i]
-        if (b.isDominosa) continue
-        const siblings: Direction[] = []
-        directionMap.forEach(
-          (_, d) => {
-            const bn = this.getNeighbor(b, d)
-            if (!bn || bn.isDominosa) return
-            siblings.push(d)
-          }
-        )
-        const pickOne = siblings[Math.floor(Math.random()*siblings.length)]
-        const bw = this.getNeighbor(b, pickOne)!
-        b.id = this.dominosaCards[idx][0]
-        b.isDominosa = true
-        b.withDirection = pickOne
-        bw.id = this.dominosaCards[idx][1]
+    const dominoNums = this.dominosaCards.length
+    const dominoLeap: [DominosaBlock, DominosaBlock][] = []
+    const pathsLeap: Direction[][] = []
+    let cardidx = 0
+    while (cardidx<dominoNums) {
+      let curBlock = this.getNextBlock()!
+      const paths = this.getAvaiableDirection(curBlock)
+      if (paths.length===0) {
+        while (!pathsLeap.at(-1)!.length) {
+          pathsLeap.pop()
+          const domino = dominoLeap.pop()!
+          domino.forEach((b) => {
+            b.isDominosa = false
+            b.withDirection = undefined
+          })
+          cardidx = cardidx - 1
+        }
+        const anotherPath = pickOne(pathsLeap.at(-1)!)
+        let [b, bw] = dominoLeap.pop()!
+        b.withDirection = anotherPath
+        bw.isDominosa = false
+        bw = b.getNeighbor(anotherPath)!
         bw.isDominosa = true
-        bw.withDirection = reverseDirection(pickOne)
-        idx += 1
+        bw.withDirection = reverseDirection(anotherPath)
+        dominoLeap.push([b, bw])
+      } else {
+        const pickPath = pickOne(paths)
+        pathsLeap.push(paths)
+        const bw = curBlock.getNeighbor(pickPath)!
+        curBlock.isDominosa = true
+        bw.isDominosa = true
+        curBlock.withDirection = pickPath
+        bw.withDirection = reverseDirection(pickPath)
+        curBlock.id = this.dominosaCards[cardidx][0]
+        bw.id = this.dominosaCards[cardidx][1]
+        dominoLeap.push([curBlock, bw])
+        cardidx = cardidx + 1
       }
     }
   }
 
-  getNeighbor(b: DominosaBlock, d: Direction) {
-    const x = b.x + directionMap.get(d)![0]
-    const y = b.y + directionMap.get(d)![1]
-    if (x<0 || x>=this.width || y<0 || y>=this.height)
-      return undefined
-    else
-      return this.board.value[y][x]
-  }
-
   changeDominosa({b, d} : {b:DominosaBlock, d:Direction}) {
-    const bw = this.getNeighbor(b, d)
+    const bw = b.getNeighbor(d)
     if (!bw) return
     if (!b.isDominosa) {
       b.isDominosa = true
     } else {
-      const e = this.getNeighbor(b, b.withDirection!)!
+      const e = b.getNeighbor(b.withDirection!)!
       e.isDominosa = false
       e.withDirection = undefined
     }
@@ -106,7 +144,7 @@ export class Play {
     if (!bw.isDominosa) {
       bw.isDominosa = true
     } else {
-      const e = this.getNeighbor(bw, bw.withDirection!)!
+      const e = bw.getNeighbor(bw.withDirection!)!
       e.isDominosa = false
       e.withDirection = undefined
     }
