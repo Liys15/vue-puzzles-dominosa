@@ -30,7 +30,7 @@ export class Play {
   width: number = 0
   height: number = 0
   dominosaCards: [number, number][] = []
-  board: Ref<DominosaBlock[][]> = ref([])
+  board: Ref<DominosaBlock>[][] = []
 
   constructor(setting: SettingType) {
     this.reset(setting)
@@ -45,14 +45,14 @@ export class Play {
       for (let j=i; j<=n; j++)
         this.dominosaCards.push([i, j])
     this.dominosaCards.sort(() => Math.random()-0.5)
-    this.board.value = this.initBoard()
+    this.board = this.initBoard()
     this.generateGame()
   }
 
   private initBoard() {
     const board =  Array.from({length: this.height},
-      (_, y): DominosaBlock[] => Array.from({length: this.width},
-        (_,x): DominosaBlock => ({
+      (_, y): Ref<DominosaBlock>[] => Array.from({length: this.width},
+        (_,x): Ref<DominosaBlock> => ref<DominosaBlock>({
           id: 0,
           x,
           y,
@@ -65,7 +65,7 @@ export class Play {
             if (x1<0 || x1>=this.width || y1<0 || y1>=this.height)
               return undefined
             else
-              return board[y1][x1]
+              return board[y1][x1].value
           }
         })
       )
@@ -84,8 +84,8 @@ export class Play {
   }
 
   private getNextBlock():DominosaBlock | undefined {
-    const flatBoard = this.board.value.flat()
-    return flatBoard.find((b) => !b.isDominosa)
+    const flatBoard = this.board.flat()
+    return flatBoard.find((b) => !b.value.isDominosa)?.value
   }
 
   private generateGame() {
@@ -102,17 +102,17 @@ export class Play {
           const domino = dominoLeap.pop()!
           domino.forEach((b) => {
             b.isDominosa = false
-            b.withDirection = undefined
+            b.correctDirection = undefined
           })
           cardidx = cardidx - 1
         }
         const anotherPath = pickOne(pathsLeap.at(-1)!)
         let [b, bw] = dominoLeap.pop()!
-        b.withDirection = anotherPath
+        b.correctDirection = anotherPath
         bw.isDominosa = false
         bw = b.getNeighbor(anotherPath)!
         bw.isDominosa = true
-        bw.withDirection = reverseDirection(anotherPath)
+        bw.correctDirection = reverseDirection(anotherPath)
         dominoLeap.push([b, bw])
       } else {
         const pickPath = pickOne(paths)
@@ -120,17 +120,18 @@ export class Play {
         const bw = curBlock.getNeighbor(pickPath)!
         curBlock.isDominosa = true
         bw.isDominosa = true
-        curBlock.withDirection = pickPath
-        bw.withDirection = reverseDirection(pickPath)
+        curBlock.correctDirection = pickPath
+        bw.correctDirection = reverseDirection(pickPath)
         curBlock.id = this.dominosaCards[cardidx][0]
         bw.id = this.dominosaCards[cardidx][1]
         dominoLeap.push([curBlock, bw])
         cardidx = cardidx + 1
       }
     }
+    this.board.flat().forEach((b)=>b.value.isDominosa=false)
   }
 
-  changeDominosa({b, d} : {b:DominosaBlock, d:Direction}) {
+  changeDominosa({b, d}: {b:DominosaBlock, d:Direction}) {
     const bw = b.getNeighbor(d)
     if (!bw) return
     if (!b.isDominosa) {

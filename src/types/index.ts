@@ -5,8 +5,8 @@ export interface DominosaBlock {
   x: number
   y:number
   isDominosa: boolean
-  correctDirection: Direction | undefined
-  withDirection: Direction | undefined
+  correctDirection?: Direction
+  withDirection?: Direction
   getNeighbor: (d: Direction) => DominosaBlock | undefined
 }
 

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-
+import { Ref } from 'vue';
 import { Direction, DominosaBlock } from '~/types';
 
 const blockEl = ref()
 const { x, y } = useMouse()
 
 const props = defineProps<{
-  block: DominosaBlock
+  block: Ref<DominosaBlock>
 }>()
 
 const emit = defineEmits<{
@@ -19,31 +19,30 @@ function handleClick(x:number, y:number) {
   const y0 = el.getBoundingClientRect().y
   const w = el.getBoundingClientRect().width
   const h = el.getBoundingClientRect().height
-
   if ((y-y0)/h <= (x-x0)/w) {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      emit('changeDomino', { b: props.block, d: 'top'})
+      emit('changeDomino', { b: props.block.value, d: 'top'})
     }
     else {
-      emit('changeDomino', { b: props.block, d: 'right'})
+      emit('changeDomino', { b: props.block.value, d: 'right'})
     }
   }
   else {
     if ((y-y0)/h <= (x0+w-x)/w) {
-      emit('changeDomino', { b: props.block, d: 'left'})
+      emit('changeDomino', { b: props.block.value, d: 'left'})
     }
     else {
-      emit('changeDomino', { b: props.block, d: 'bottom'})
+      emit('changeDomino', { b: props.block.value, d: 'bottom'})
     }
   }
 }
 
 function getClass() {
-  if (!props.block.isDominosa)
+  if (!props.block.value.isDominosa)
     return
-  const baseCss = 'w-14 h-14 bg-black'
+  const baseCss = 'bg-black'
   let varCss = 'left-1 top-1'
-  switch (props.block.withDirection) {
+  switch (props.block.value.withDirection) {
     case 'top':
       varCss = 'top-0 left-0.5 b-bl-r-5 b-br-r-5'
       break;
@@ -65,10 +64,10 @@ function getClass() {
 <template>
   <div relative>
     <div
-      absolute
+      absolute w-14 h-14
       :class="getClass()"
     />
-    <NumIcon :num="props.block.id" />
+    <NumIcon :num="props.block.value.id" />
     <div
       ref="blockEl"
       absolute w-full h-full top-0 left-0 z-10
