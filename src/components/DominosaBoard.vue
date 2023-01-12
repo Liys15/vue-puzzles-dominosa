@@ -10,7 +10,6 @@ watch(
   () => play.state.value.gameState,
   (newValue) => {
     if (newValue==='won') {
-      console.log('watch: won!');
       isPassed.value = true
     }
   }

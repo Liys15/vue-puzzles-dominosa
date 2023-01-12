@@ -213,7 +213,6 @@ export class Play {
 
   checkGameState() {
     if (this.dominosaCards.length===this.width*this.height/2 && !this.repeatPairs.length) {
-      console.log('check win');
       this.state.value.gameState = 'won'
     }
   }
