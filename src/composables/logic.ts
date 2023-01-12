@@ -1,4 +1,9 @@
-import { Direction, DominosaBlock, SettingType } from "~/types"
+import { GameState, Direction, DominosaBlock, SettingType } from "~/types"
+
+type State = {
+  gameState: GameState,
+  board: DominosaBlock[][]
+}
 
 const directionMap: Map<Direction, [number,number]> = new Map([
   ['top', [0,-1]],
@@ -26,11 +31,12 @@ function pickOne<T>(arr: T[]) {
 }
 
 export class Play {
+  state = ref({} as State)
   orderNum = 0
   width = 0
   height = 0
   dominosaCards: [DominosaBlock, DominosaBlock][] = []
-  board = ref([] as DominosaBlock[][])
+  repeatPairs: [DominosaBlock, DominosaBlock][] = []
 
   constructor(setting: SettingType) {
     this.reset(setting)
@@ -40,13 +46,14 @@ export class Play {
     this.orderNum = setting.orderNum
     this.width = this.orderNum+2
     this.height = this.orderNum+1
+    this.state.value.gameState = 'play'
     this.initBoard()
     this.generateGame()
     this.dominosaCards = []
   }
 
   private initBoard() {
-    this.board.value =  Array.from({length: this.height},
+    this.state.value.board =  Array.from({length: this.height},
       (_, y): DominosaBlock[] => Array.from({length: this.width},
         (_,x): DominosaBlock => ({
           id: 0,
@@ -62,7 +69,7 @@ export class Play {
             if (x1<0 || x1>=this.width || y1<0 || y1>=this.height)
               return undefined
             else
-              return this.board.value[y1][x1]
+              return this.state.value.board[y1][x1]
           }
         })
       )
@@ -80,7 +87,7 @@ export class Play {
   }
 
   private getNextBlock():DominosaBlock | undefined {
-    const flatBoard = this.board.value.flat()
+    const flatBoard = this.state.value.board.flat()
     return flatBoard.find((b) => !b.isDominosa)
   }
 
@@ -129,7 +136,7 @@ export class Play {
         cardidx = cardidx + 1
       }
     }
-    this.board.value.flat().forEach((b)=>b.isDominosa=false)
+    this.state.value.board.flat().forEach((b)=>b.isDominosa=false)
   }
 
   private isSameIdDomino(a:[DominosaBlock, DominosaBlock], b:[DominosaBlock, DominosaBlock]) {
@@ -141,19 +148,19 @@ export class Play {
   }
 
   private handleRepeatDomino() {
+    this.repeatPairs = []
     const n = this.dominosaCards.length
-    const repeatPairs:[DominosaBlock, DominosaBlock][] = []
     for (let i=0; i<n-1; i++) {
       const ci = this.dominosaCards[i]
       for (let j=i+1; j<n; j++) {
         const cj = this.dominosaCards[j]
         if (this.isSameIdDomino(ci, cj))
-          repeatPairs.push(ci)
+          this.repeatPairs.push(ci)
       }
     }
     for (let k=0; k<n; k++) {
       const ck = this.dominosaCards[k]
-      if (repeatPairs.some(p => this.isSameIdDomino(p, ck)))
+      if (this.repeatPairs.some(p => this.isSameIdDomino(p, ck)))
         ck.forEach(b => b.isRepeat=true)
       else
         ck.forEach(b => b.isRepeat=false)
@@ -197,9 +204,17 @@ export class Play {
       bw.withDirection = undefined
       const idx = this.dominosaCards.findIndex(p => this.isSameDomino(p, [b,bw]))
       this.dominosaCards.splice(idx, 1)
-    } else
+    } else {
       this.dominosaCards.push([b, bw])
-    console.log(this.dominosaCards);
+    }
     this.handleRepeatDomino()
+    this.checkGameState()
+  }
+
+  checkGameState() {
+    if (this.dominosaCards.length===this.width*this.height/2 && !this.repeatPairs.length) {
+      console.log('check win');
+      this.state.value.gameState = 'won'
+    }
   }
 }

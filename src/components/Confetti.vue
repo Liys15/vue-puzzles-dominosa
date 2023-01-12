@@ -41,7 +41,7 @@ function congrats() {
 }
 
 watch(
-  () => isPassed,
+  () => isPassed.value,
   (v) => {
     if (v)
       setTimeout(congrats, 300)

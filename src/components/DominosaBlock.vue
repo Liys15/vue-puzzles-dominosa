@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isDev } from '~/state';
 import { Direction, DominosaBlock } from '~/types';
 
 const blockEl = ref()
@@ -41,7 +42,8 @@ function getClass(b: DominosaBlock) {
     return
   const baseCss = b.isRepeat? 'bg-red' : 'bg-black'
   let varCss = 'left-1 top-1'
-  switch (props.block.withDirection) {
+  const condition = isDev.value?props.block.genDirection:props.block.withDirection
+  switch (condition) {
     case 'top':
       varCss = 'top-0 left-0.5 b-bl-r-5 b-br-r-5'
       break;

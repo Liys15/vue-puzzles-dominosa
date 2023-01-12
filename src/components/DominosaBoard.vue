@@ -1,10 +1,39 @@
 <script setup lang="ts">
-import { showSettings } from '~/state';
+import { isDev, isPassed, showSettings } from '~/state';
 import { Play } from '~/composables';
 import { setting } from '~/store';
 import type { Direction, DominosaBlock } from '~/types';
 
 const play = new Play({orderNum: 3})
+
+watch(
+  () => play.state.value.gameState,
+  (newValue) => {
+    if (newValue==='won') {
+      console.log('watch: won!');
+      isPassed.value = true
+    }
+  }
+)
+
+watch(isDev, (newValue) => {
+  play.dominosaCards = []
+  if (newValue) {
+    play.state.value.board.forEach(row => {
+      row.forEach(block => {
+        block.isDominosa = true
+        block.isRepeat = false
+      })
+    })
+  } else {
+    play.state.value.board.forEach(row => {
+      row.forEach(block => {
+        block.isDominosa = false
+        block.isRepeat = false
+      })
+    })
+  }
+})
 
 function handleClick(v: {b: DominosaBlock, d: Direction}) {
   play.changeDominosa(v)
@@ -39,7 +68,7 @@ function handleCustomize() {
       m-4 b=" gray-700" b-bottom-left-r
     dark:b-black bg-gray-100 dark:bg-gray-600
     >
-      <div v-for="(row, y) in play.board.value" :key="y" flex="~">
+      <div v-for="(row, y) in play.state.value.board" :key="y" flex="~">
         <DominosaBlock
           v-for="(b, x) in row" :key="x"
           block-div :block="b"

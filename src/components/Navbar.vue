@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { isDark, showHelp, showSettings } from '~/state'
+import { isDark, isDev, showHelp, showSettings } from '~/state'
 
 const toggleDark = useToggle(isDark)
 const toggleSettings = useToggle(showSettings)
+const toggleDev = useToggle(isDev)
 
 function openHelp() {
   showHelp.value = true
@@ -21,6 +22,9 @@ function openHelp() {
       <div flex items-center>
         <button icon-btn mx2 @click="openHelp()">
           <div i-carbon-help />
+        </button>
+        <button icon-btn mx2 @click="toggleDev()">
+          <div i-carbon-tool-kit />
         </button>
       </div>
 
