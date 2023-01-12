@@ -54,7 +54,7 @@ export class Play {
           y,
           isDominosa: false,
           isRepeat: false,
-          correctDirection: undefined,
+          genDirection: undefined,
           withDirection: undefined,
           getNeighbor: (d:Direction) => {
             const x1 = x + directionMap.get(d)![0]
@@ -103,17 +103,17 @@ export class Play {
           const domino = dominoLeap.pop()!
           domino.forEach((b) => {
             b.isDominosa = false
-            b.correctDirection = undefined
+            b.genDirection = undefined
           })
           cardidx = cardidx - 1
         }
         const anotherPath = pickOne(pathsLeap.at(-1)!)
         let [b, bw] = dominoLeap.pop()!
-        b.correctDirection = anotherPath
+        b.genDirection = anotherPath
         bw.isDominosa = false
         bw = b.getNeighbor(anotherPath)!
         bw.isDominosa = true
-        bw.correctDirection = reverseDirection(anotherPath)
+        bw.genDirection = reverseDirection(anotherPath)
         dominoLeap.push([b, bw])
       } else {
         const pickPath = pickOne(paths)
@@ -121,8 +121,8 @@ export class Play {
         const bw = curBlock.getNeighbor(pickPath)!
         curBlock.isDominosa = true
         bw.isDominosa = true
-        curBlock.correctDirection = pickPath
-        bw.correctDirection = reverseDirection(pickPath)
+        curBlock.genDirection = pickPath
+        bw.genDirection = reverseDirection(pickPath)
         curBlock.id = numPairs[cardidx][0]
         bw.id = numPairs[cardidx][1]
         dominoLeap.push([curBlock, bw])

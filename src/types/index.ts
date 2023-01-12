@@ -6,7 +6,7 @@ export interface DominosaBlock {
   y:number
   isDominosa: boolean
   isRepeat: boolean
-  correctDirection?: Direction
+  genDirection?: Direction
   withDirection?: Direction
   getNeighbor: (d: Direction) => DominosaBlock | undefined
 }
