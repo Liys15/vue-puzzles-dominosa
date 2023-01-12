@@ -1,4 +1,3 @@
-import { Ref } from "vue"
 import { Direction, DominosaBlock, SettingType } from "~/types"
 
 const directionMap: Map<Direction, [number,number]> = new Map([
@@ -27,36 +26,34 @@ function pickOne<T>(arr: T[]) {
 }
 
 export class Play {
-  width: number = 0
-  height: number = 0
-  dominosaCards: [number, number][] = []
-  board: Ref<DominosaBlock>[][] = []
+  orderNum = 0
+  width = 0
+  height = 0
+  dominosaCards: [DominosaBlock, DominosaBlock][] = []
+  board = ref([] as DominosaBlock[][])
 
   constructor(setting: SettingType) {
     this.reset(setting)
   }
 
   reset(setting: SettingType) {
-    const n = setting.orderNum
-    this.width = n+2
-    this.height = n+1
-    this.dominosaCards = []
-    for (let i=0; i<=n; i++)
-      for (let j=i; j<=n; j++)
-        this.dominosaCards.push([i, j])
-    this.dominosaCards.sort(() => Math.random()-0.5)
-    this.board = this.initBoard()
+    this.orderNum = setting.orderNum
+    this.width = this.orderNum+2
+    this.height = this.orderNum+1
+    this.initBoard()
     this.generateGame()
+    this.dominosaCards = []
   }
 
   private initBoard() {
-    const board =  Array.from({length: this.height},
-      (_, y): Ref<DominosaBlock>[] => Array.from({length: this.width},
-        (_,x): Ref<DominosaBlock> => ref<DominosaBlock>({
+    this.board.value =  Array.from({length: this.height},
+      (_, y): DominosaBlock[] => Array.from({length: this.width},
+        (_,x): DominosaBlock => ({
           id: 0,
           x,
           y,
           isDominosa: false,
+          isRepeat: false,
           correctDirection: undefined,
           withDirection: undefined,
           getNeighbor: (d:Direction) => {
@@ -65,12 +62,11 @@ export class Play {
             if (x1<0 || x1>=this.width || y1<0 || y1>=this.height)
               return undefined
             else
-              return board[y1][x1].value
+              return this.board.value[y1][x1]
           }
         })
       )
     )
-    return board
   }
 
   private getAvaiableDirection(b: DominosaBlock) {
@@ -84,12 +80,17 @@ export class Play {
   }
 
   private getNextBlock():DominosaBlock | undefined {
-    const flatBoard = this.board.flat()
-    return flatBoard.find((b) => !b.value.isDominosa)?.value
+    const flatBoard = this.board.value.flat()
+    return flatBoard.find((b) => !b.isDominosa)
   }
 
   private generateGame() {
-    const dominoNums = this.dominosaCards.length
+    const numPairs = []
+    for (let i=0; i<=this.orderNum; i++)
+      for (let j=i; j<=this.orderNum; j++)
+        numPairs.push([i, j])
+    numPairs.sort(() => Math.random()-0.5)
+    const dominoNums = numPairs.length
     const dominoLeap: [DominosaBlock, DominosaBlock][] = []
     const pathsLeap: Direction[][] = []
     let cardidx = 0
@@ -122,33 +123,83 @@ export class Play {
         bw.isDominosa = true
         curBlock.correctDirection = pickPath
         bw.correctDirection = reverseDirection(pickPath)
-        curBlock.id = this.dominosaCards[cardidx][0]
-        bw.id = this.dominosaCards[cardidx][1]
+        curBlock.id = numPairs[cardidx][0]
+        bw.id = numPairs[cardidx][1]
         dominoLeap.push([curBlock, bw])
         cardidx = cardidx + 1
       }
     }
-    this.board.flat().forEach((b)=>b.value.isDominosa=false)
+    this.board.value.flat().forEach((b)=>b.isDominosa=false)
+  }
+
+  private isSameIdDomino(a:[DominosaBlock, DominosaBlock], b:[DominosaBlock, DominosaBlock]) {
+    return (a[0].id===b[0].id&&a[1].id===b[1].id) || (a[0].id===b[1].id&&a[1].id===b[0].id)
+  }
+
+  private isSameDomino(a:[DominosaBlock, DominosaBlock], b:[DominosaBlock, DominosaBlock]) {
+    return (a[0].x===b[0].x&&a[0].y===b[0].y&&a[1].x===b[1].x&&a[1].y===b[1].y) || (a[0].x===b[1].x&&a[0].y===b[1].y&&a[1].x===b[0].x&&a[1].y===b[0].y)
+  }
+
+  private handleRepeatDomino() {
+    const n = this.dominosaCards.length
+    const repeatPairs:[DominosaBlock, DominosaBlock][] = []
+    for (let i=0; i<n-1; i++) {
+      const ci = this.dominosaCards[i]
+      for (let j=i+1; j<n; j++) {
+        const cj = this.dominosaCards[j]
+        if (this.isSameIdDomino(ci, cj))
+          repeatPairs.push(ci)
+      }
+    }
+    for (let k=0; k<n; k++) {
+      const ck = this.dominosaCards[k]
+      if (repeatPairs.some(p => this.isSameIdDomino(p, ck)))
+        ck.forEach(b => b.isRepeat=true)
+      else
+        ck.forEach(b => b.isRepeat=false)
+    }
   }
 
   changeDominosa({b, d}: {b:DominosaBlock, d:Direction}) {
     const bw = b.getNeighbor(d)
+    let isClickExistDomino = false
     if (!bw) return
     if (!b.isDominosa) {
       b.isDominosa = true
-    } else {
+    } else if (d !== b.withDirection) {
       const e = b.getNeighbor(b.withDirection!)!
       e.isDominosa = false
+      e.isRepeat = false
       e.withDirection = undefined
-    }
+      const firstIdx = this.dominosaCards.findIndex(v => this.isSameDomino(v, [b, e]))
+      this.dominosaCards.splice(firstIdx, 1)
+    } else isClickExistDomino = true
     b.withDirection = d
+    b.isRepeat = false
     if (!bw.isDominosa) {
       bw.isDominosa = true
-    } else {
+    } else if (d !== reverseDirection(bw.withDirection!)) {
       const e = bw.getNeighbor(bw.withDirection!)!
       e.isDominosa = false
+      e.isRepeat = false
       e.withDirection = undefined
-    }
+      const firstIdx = this.dominosaCards.findIndex(v => this.isSameDomino(v, [bw, e]))
+      this.dominosaCards.splice(firstIdx, 1)
+    } else isClickExistDomino = true
     bw.withDirection = reverseDirection(d)
+    bw.isRepeat = false
+    if (isClickExistDomino) {
+      b.isDominosa = false
+      b.isRepeat = false
+      b.withDirection = undefined
+      bw.isDominosa = false
+      bw.isRepeat = false
+      bw.withDirection = undefined
+      const idx = this.dominosaCards.findIndex(p => this.isSameDomino(p, [b,bw]))
+      this.dominosaCards.splice(idx, 1)
+    } else
+      this.dominosaCards.push([b, bw])
+    console.log(this.dominosaCards);
+    this.handleRepeatDomino()
   }
 }
