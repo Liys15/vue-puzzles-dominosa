@@ -11,6 +11,8 @@ watch(
   (newValue) => {
     if (newValue==='won') {
       isPassed.value = true
+    } else {
+      isPassed.value = false
     }
   }
 )
