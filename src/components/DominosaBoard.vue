@@ -38,6 +38,15 @@ watch(isDev, (newValue) => {
   }
 })
 
+watch(
+  showSettings,
+  (newValue) => {
+    if (!newValue && setting.value.orderNum) {
+      play.reset(setting.value)
+    }
+  }
+)
+
 function handleClick(v: {b: DominosaBlock, d: Direction}) {
   play.changeDominosa(v)
 }
