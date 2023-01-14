@@ -33,7 +33,7 @@ function inc() {
       <button px-4 @click="dec()">
         -
       </button>
-      <div b="x black" px-8 bg-gray-2>
+      <div b="x black" px-8 bg-gray-2 dark:text-black>
         {{ count }}
       </div>
       <button px-4 @click="inc()">
