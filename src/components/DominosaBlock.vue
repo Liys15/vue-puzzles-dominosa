@@ -43,6 +43,8 @@ function getClass(b: DominosaBlock) {
   let baseCss
   if (isPassed.value) {
     baseCss = 'bg-green-500/60'
+  } else if (b.isRepeat) {
+    baseCss = 'bg-red'
   } else {
     baseCss = 'bg-gray-4'
   }

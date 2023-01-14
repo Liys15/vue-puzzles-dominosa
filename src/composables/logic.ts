@@ -43,7 +43,7 @@ export class Play {
   }
 
   reset(setting: SettingType) {
-    this.orderNum = setting.orderNum
+    this.orderNum = setting.orderNum!
     this.width = this.orderNum+2
     this.height = this.orderNum+1
     this.state.value.gameState = 'play'
