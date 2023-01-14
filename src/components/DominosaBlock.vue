@@ -62,7 +62,9 @@ function getClass(b: DominosaBlock) {
       varCss = ['right-0', 'top-0.5', 'b-tl-r-5', 'b-bl-r-5']
       break;
   }
-  varCss.push(isPassed.value?'filp':'')
+  if (isPassed.value) {
+    varCss.push(b.withDirection==='left'||b.withDirection==='right'?'filp-X':'filp-Y')
+  }
   return `${baseCss} ${varCss.join(' ')}`
 }
 
@@ -94,9 +96,15 @@ function getClass(b: DominosaBlock) {
   color: white
 }
 
-.filp {
+.filp-X {
   transition: transform 1s;
   transform-style: preserve-3d;
   transform: rotateX(360deg);
+}
+
+.filp-Y {
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  transform: rotateY(360deg);
 }
 </style>

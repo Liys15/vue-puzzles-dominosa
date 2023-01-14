@@ -63,13 +63,13 @@ function handleCustomize() {
 <template>
   <div h-full flex="~ col" items-center>
     <div id="menu" flex justify-center gap-2 mt-6>
-      <button btn @click="play.reset({orderNum: 3})">
+      <button btn @click="play.reset({orderNum: 1})">
         Easy
       </button>
-      <button btn @click="play.reset({orderNum: 5})">
+      <button btn @click="play.reset({orderNum: 3})">
         Medium
       </button>
-      <button btn @click="play.reset({orderNum: 7})">
+      <button btn @click="play.reset({orderNum: 5})">
         Hard
       </button>
       <button btn @click="handleCustomize()">
