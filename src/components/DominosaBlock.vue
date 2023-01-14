@@ -44,7 +44,7 @@ function getClass(b: DominosaBlock) {
   if (isPassed.value) {
     baseCss = 'bg-green-500/60'
   } else {
-    baseCss = 'bg-black dark:bg-gray-700'
+    baseCss = 'bg-gray-4'
   }
   let varCss = ['left-1, top-1']
   const condition = isDev.value?props.block.genDirection:props.block.withDirection
