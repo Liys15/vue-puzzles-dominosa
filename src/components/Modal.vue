@@ -63,7 +63,7 @@ const transform = computed(() => {
 
 <template>
   <div
-    fixed z-40 op-50
+    fixed z-40 op-95
     :class="[containerPositionClass, modelValue ? '' : 'pointer-events-none']"
   >
     <div
@@ -73,7 +73,7 @@ const transform = computed(() => {
       @click="$emit('update:modelValue', false)"
     />
     <div
-      class=" border-base absolute transition-all duration-200 ease-out max-w-screen max-h-screen overflow-auto scrolls"
+      class="absolute transition-all duration-200 ease-out max-w-screen max-h-screen overflow-auto scrolls"
       :class="[positionClass]"
       :style="modelValue ? {} : { transform }"
     >

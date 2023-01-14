@@ -2,9 +2,11 @@
 import { isDev, isPassed, showSettings } from '~/state';
 import { Play } from '~/composables';
 import { setting } from '~/store';
-import type { Direction, DominosaBlock } from '~/types';
+import type { Direction, DominosaBlock, SettingType } from '~/types';
 
-const play = new Play({orderNum: 3})
+const defaultSetting:SettingType = setting.value.orderNum?setting.value:{orderNum:3}
+
+const play = new Play(defaultSetting)
 
 watch(
   () => play.state.value.gameState,

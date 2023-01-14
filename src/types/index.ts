@@ -14,5 +14,5 @@ export interface DominosaBlock {
 export type Direction = 'top' | 'bottom' | 'right' | 'left'
 
 export type SettingType = {
-  orderNum: 0 | 1| 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+  orderNum: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined
 }

@@ -1,5 +1,5 @@
 export const isDark = useDark()
 export const showHelp = ref(false)
-export const showSettings = ref(false)
+export const showSettings = ref(true)
 export const isPassed = ref(false)
 export const isDev = ref(false)

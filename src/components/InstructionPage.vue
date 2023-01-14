@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div flex="~ col" w-full py-6 bg-lightBlue>
+  <div flex="~ col" w-full py-8 bg-gray-3 dark:bg-gray-9>
     Insturction
   </div>
 </template>
