@@ -19,7 +19,9 @@ watch(
   }
 )
 
-watch(isDev, (newValue) => {
+watch(
+  isDev,
+  (newValue) => {
   play.dominosaCards = []
   if (newValue) {
     play.state.value.board.forEach(row => {
