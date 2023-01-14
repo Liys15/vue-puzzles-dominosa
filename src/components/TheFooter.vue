@@ -1,5 +1,5 @@
 <template>
-  <nav text-xl my-6 inline-flex gap-1 select-none>
+  <nav text-xl my-4 inline-flex gap-1 select-none>
       <span>Made by</span>
       <a
       icon-btn inline-flex items-center mx-1

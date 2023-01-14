@@ -5,9 +5,9 @@
   >
     <Navbar />
 
-    <DominosaBoard my-6 />
+    <DominosaBoard />
 
-    <TheFooter absolute bottom-0/>
+    <TheFooter />
 
     <ModalsLayer />
 

@@ -61,8 +61,8 @@ function handleCustomize() {
 </script>
 
 <template>
-  <div flex="~ col" items-center>
-    <div id="menu" flex justify-center gap-2 pt-2>
+  <div h-full flex="~ col" items-center>
+    <div id="menu" flex justify-center gap-2 mt-6>
       <button btn @click="play.reset({orderNum: 3})">
         Easy
       </button>
@@ -76,13 +76,15 @@ function handleCustomize() {
         Customize
       </button>
     </div>
-    <div m-4 b="2 gray-500/50" rd>
-      <div v-for="(row, y) in play.state.value.board" :key="y" flex="~">
-        <DominosaBlock
-          v-for="(b, x) in row" :key="x"
-          block-div :block="b"
-          @change-domino="handleClick"
-        />
+    <div class="game-board" h="80%" flex items-center>
+      <div m-4 b="2 gray-500/50" rd>
+        <div v-for="(row, y) in play.state.value.board" :key="y" flex="~">
+          <DominosaBlock
+            v-for="(b, x) in row" :key="x"
+            block-div :block="b"
+            @change-domino="handleClick"
+          />
+        </div>
       </div>
     </div>
   </div>
