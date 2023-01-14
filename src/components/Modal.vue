@@ -16,13 +16,13 @@ defineEmits<{
 const positionClass = computed(() => {
   switch (props.direction) {
     case 'bottom':
-      return 'bottom-0 left-0 right-0 border-t'
+      return 'bottom-0 left-0 right-0'
     case 'top':
-      return 'top-0 left-0 right-0 border-b'
+      return 'top-0 left-0 right-0'
     case 'left':
-      return 'bottom-0 left-0 top-0 border-r w-max'
+      return 'bottom-0 left-0 top-0 w-max'
     case 'right':
-      return 'bottom-0 top-0 right-0 border-l w-max'
+      return 'bottom-0 top-0 right-0 w-max'
     default:
       return ''
   }
@@ -63,7 +63,7 @@ const transform = computed(() => {
 
 <template>
   <div
-    fixed z-40 op-95
+    fixed z-40
     :class="[containerPositionClass, modelValue ? '' : 'pointer-events-none']"
   >
     <div

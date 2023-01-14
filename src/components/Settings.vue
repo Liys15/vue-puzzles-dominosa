@@ -4,8 +4,8 @@ import { setting } from '~/store';
 </script>
 
 <template>
-  <div flex="~ col" w-full py-8 bg-gray-3 dark:bg-gray-9>
-    <p>Setting</p>
+  <div flex="~ col" w-full py-4 text-2xl bg-gray-3 dark:bg-gray-9>
+    <p mb-4 font-700>Setting</p>
     <TheCounter v-model:orderNum="setting.orderNum"/>
   </div>
 </template>

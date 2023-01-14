@@ -27,13 +27,18 @@ function inc() {
 </script>
 
 <template>
-  <div>
-    <button btn @click="dec()">
-      -
-    </button>
-    <span mx-4>{{ count }}</span>
-    <button btn @click="inc()">
-      +
-    </button>
+  <div h-full mxa my-1 flex text-xl items-center>
+    <span mx-6 text-xl>Order Number: </span>
+    <div inline-flex b="1 black" rd>
+      <button px-4 @click="dec()">
+        -
+      </button>
+      <div b="x black" px-8 bg-gray-2>
+        {{ count }}
+      </div>
+      <button px-4 @click="inc()">
+        +
+      </button>
+    </div>
   </div>
 </template>
