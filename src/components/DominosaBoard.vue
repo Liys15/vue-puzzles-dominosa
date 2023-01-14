@@ -65,10 +65,7 @@ function handleCustomize() {
         Customize
       </button>
     </div>
-    <div
-      m-4 b=" gray-700" b-bottom-left-r
-    dark:b-black bg-gray-100 dark:bg-gray-600
-    >
+    <div m-4 b="2 gray-500/50" rd>
       <div v-for="(row, y) in play.state.value.board" :key="y" flex="~">
         <DominosaBlock
           v-for="(b, x) in row" :key="x"

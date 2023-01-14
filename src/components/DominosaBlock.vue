@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDev } from '~/state';
+import { isDev, isPassed } from '~/state';
 import { Direction, DominosaBlock } from '~/types';
 
 const blockEl = ref()
@@ -40,24 +40,30 @@ function handleClick(x:number, y:number) {
 function getClass(b: DominosaBlock) {
   if (!b.isDominosa)
     return
-  const baseCss = b.isRepeat? 'bg-red' : 'bg-black'
-  let varCss = 'left-1 top-1'
+  let baseCss
+  if (isPassed.value) {
+    baseCss = 'bg-green-500/60'
+  } else {
+    baseCss = 'bg-black dark:bg-gray-700'
+  }
+  let varCss = ['left-1, top-1']
   const condition = isDev.value?props.block.genDirection:props.block.withDirection
   switch (condition) {
     case 'top':
-      varCss = 'top-0 left-0.5 b-bl-r-5 b-br-r-5'
+      varCss = ['top-0', 'left-0.5', 'b-bl-r-5', 'b-br-r-5']
       break;
     case 'bottom':
-      varCss = 'bottom-0 left-0.5 b-tl-r-5 b-tr-r-5'
+      varCss = ['bottom-0', 'left-0.5', 'b-tl-r-5', 'b-tr-r-5']
       break;
     case 'left':
-      varCss = 'left-0 top-0.5 b-tr-r-5 b-br-r-5'
+      varCss = ['left-0', 'top-0.5', 'b-tr-r-5', 'b-br-r-5']
       break;
     case 'right':
-      varCss = 'right-0 top-0.5 b-tl-r-5 b-bl-r-5'
+      varCss = ['right-0', 'top-0.5', 'b-tl-r-5', 'b-bl-r-5']
       break;
   }
-  return `${baseCss} ${varCss}`
+  varCss.push(isPassed.value?'filp':'')
+  return `${baseCss} ${varCss.join(' ')}`
 }
 
 </script>
@@ -86,5 +92,11 @@ function getClass(b: DominosaBlock) {
 
 .bg-black + div {
   color: white
+}
+
+.filp {
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  transform: rotateX(360deg);
 }
 </style>

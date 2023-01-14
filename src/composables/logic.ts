@@ -168,6 +168,8 @@ export class Play {
   }
 
   changeDominosa({b, d}: {b:DominosaBlock, d:Direction}) {
+    if (this.state.value.gameState==='won')
+      return
     const bw = b.getNeighbor(d)
     let isClickExistDomino = false
     if (!bw) return
