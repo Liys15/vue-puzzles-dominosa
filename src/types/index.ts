@@ -6,6 +6,12 @@ export interface DominosaBlock {
   y:number
   isDominosa: boolean
   isRepeat: boolean
+  spiltLine: {
+    top: boolean
+    bottom: boolean
+    right: boolean
+    left: boolean
+  }
   genDirection?: Direction
   withDirection?: Direction
   getNeighbor: (d: Direction) => DominosaBlock | undefined

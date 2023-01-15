@@ -1,3 +1,4 @@
+import { isDev } from "~/state"
 import { GameState, Direction, DominosaBlock, SettingType } from "~/types"
 
 type State = {
@@ -12,7 +13,7 @@ const directionMap: Map<Direction, [number,number]> = new Map([
   ['right', [1,0]],
 ])
 
-function reverseDirection(from: Direction): Direction {
+export function reverseDirection(from: Direction): Direction {
   switch(from) {
     case 'top':
       return 'bottom'
@@ -61,6 +62,12 @@ export class Play {
           y,
           isDominosa: false,
           isRepeat: false,
+          spiltLine: {
+            top: false,
+            bottom: false,
+            right: false,
+            left: false
+          },
           genDirection: undefined,
           withDirection: undefined,
           getNeighbor: (d:Direction) => {
@@ -101,10 +108,14 @@ export class Play {
     const dominoLeap: [DominosaBlock, DominosaBlock][] = []
     const pathsLeap: Direction[][] = []
     let cardidx = 0
+    console.log(numPairs);
     while (cardidx<dominoNums) {
       let curBlock = this.getNextBlock()!
       const paths = this.getAvaiableDirection(curBlock)
+      console.log(cardidx, 'th @avpath:', paths);
       if (paths.length===0) {
+        console.log('Stop-start#', cardidx, pathsLeap);
+        dominoLeap.forEach(p => console.log(p[0].x, p[0].y, '|', p[1].x, p[1].y))
         while (!pathsLeap.at(-1)!.length) {
           pathsLeap.pop()
           const domino = dominoLeap.pop()!
@@ -116,14 +127,22 @@ export class Play {
         }
         const anotherPath = pickOne(pathsLeap.at(-1)!)
         let [b, bw] = dominoLeap.pop()!
+        cardidx = cardidx - 1
+        console.log('block', b.x, b.y, 'choose another path', anotherPath);
         b.genDirection = anotherPath
         bw.isDominosa = false
+        bw.genDirection = undefined
         bw = b.getNeighbor(anotherPath)!
+        b.id = numPairs[cardidx][0]
+        bw.id = numPairs[cardidx][1]
         bw.isDominosa = true
         bw.genDirection = reverseDirection(anotherPath)
         dominoLeap.push([b, bw])
+        cardidx = cardidx + 1
+        console.log('Stop-end#', cardidx, pathsLeap);
       } else {
         const pickPath = pickOne(paths)
+        console.log('pick', pickPath)
         pathsLeap.push(paths)
         const bw = curBlock.getNeighbor(pickPath)!
         curBlock.isDominosa = true
@@ -168,11 +187,12 @@ export class Play {
   }
 
   changeDominosa({b, d}: {b:DominosaBlock, d:Direction}) {
-    if (this.state.value.gameState==='won')
+    if (this.state.value.gameState==='won' || isDev.value)
       return
     const bw = b.getNeighbor(d)
     let isClickExistDomino = false
     if (!bw) return
+    if (b.spiltLine[d]) return
     if (!b.isDominosa) {
       b.isDominosa = true
     } else if (d !== b.withDirection) {

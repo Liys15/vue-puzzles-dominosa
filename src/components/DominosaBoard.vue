@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isDev, isPassed, showSettings } from '~/state';
-import { Play } from '~/composables';
+import { Play, reverseDirection } from '~/composables';
 import { setting } from '~/store';
 import type { Direction, DominosaBlock, SettingType } from '~/types';
 
@@ -53,6 +53,15 @@ function handleClick(v: {b: DominosaBlock, d: Direction}) {
   play.changeDominosa(v)
 }
 
+function handleRightClick(v: {b: DominosaBlock, d: Direction}) {
+  const [b, d] = [v.b, v.d]
+  const bw = b.getNeighbor(d)
+  if (!bw) return
+  if (b.isDominosa || bw.isDominosa) return
+  b.spiltLine[d] = !b.spiltLine[d]
+  bw.spiltLine[reverseDirection(d)] = !bw.spiltLine[reverseDirection(d)]
+}
+
 function handleCustomize() {
   const orderNum = setting.value.orderNum
   if (!orderNum)
@@ -85,6 +94,7 @@ function handleCustomize() {
             v-for="(b, x) in row" :key="x"
             block-div :block="b"
             @change-domino="handleClick"
+            @spilt-line="handleRightClick"
           />
         </div>
       </div>

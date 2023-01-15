@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'changeDomino', {b, d}: {b: DominosaBlock, d: Direction}): void
+  (e: 'spiltLine', {b, d}: {b: DominosaBlock, d: Direction}): void
 }>()
 
 function handleClick(x:number, y:number) {
@@ -33,6 +34,35 @@ function handleClick(x:number, y:number) {
     }
     else {
       emit('changeDomino', { b: props.block, d: 'bottom'})
+    }
+  }
+}
+
+function handleRightClick(x:number, y:number) {
+  const el: HTMLDivElement = blockEl.value
+  const x0 = el.getBoundingClientRect().x
+  const y0 = el.getBoundingClientRect().y
+  const w = el.getBoundingClientRect().width
+  const h = el.getBoundingClientRect().height
+  const b = props.block
+  if ((y-y0)/h <= (x-x0)/w) {
+    if ((y-y0)/h <= (x0+w-x)/w) {
+      emit('spiltLine', { b, d: 'top'})
+      // b.spiltLine.top = !b.spiltLine.top
+    }
+    else {
+      emit('spiltLine', { b, d: 'right'})
+      // b.spiltLine.right = !b.spiltLine.right
+    }
+  }
+  else {
+    if ((y-y0)/h <= (x0+w-x)/w) {
+      emit('spiltLine', { b, d: 'left'})
+      // b.spiltLine.left = !b.spiltLine.left
+    }
+    else {
+      emit('spiltLine', { b, d: 'bottom'})
+      // b.spiltLine.bottom = !b.spiltLine.bottom
     }
   }
 }
@@ -75,14 +105,27 @@ function getClass(b: DominosaBlock) {
 <template>
   <div relative>
     <div
-      absolute w-14 h-14
+      id="block" absolute w-14 h-14
       :class="getClass(props.block)"
     />
+    <template v-if="props.block.spiltLine.top">
+      <div class="spilt-line top" left-1 top-0 w-13 b-t="0.1rem" />
+    </template>
+    <template v-if="props.block.spiltLine.bottom">
+      <div class="spilt-line bottom" left-1 bottom-0 w-13 b-b="0.1rem" />
+    </template>
+    <template v-if="props.block.spiltLine.right">
+      <div class="spilt-line right" top-1 right-0 h-13 b-r="0.1rem" />
+    </template>
+    <template v-if="props.block.spiltLine.left">
+      <div class="spilt-line left" top-1 left-0 h-13 b-l="0.1rem" />
+    </template>
     <NumIcon :num="props.block.id" />
     <div
       ref="blockEl"
       absolute w-full h-full top-0 left-0 z-10
       @click="handleClick(x,y)"
+      @contextmenu.prevent="handleRightClick(x, y)"
     />
   </div>
 </template>
@@ -108,5 +151,10 @@ function getClass(b: DominosaBlock) {
   transition: transform 1s;
   transform-style: preserve-3d;
   transform: rotateY(360deg);
+}
+
+.spilt-line {
+  position: absolute;
+  border-color: rgb(107, 114, 128)
 }
 </style>
