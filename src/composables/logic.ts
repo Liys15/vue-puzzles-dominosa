@@ -108,14 +108,10 @@ export class Play {
     const dominoLeap: [DominosaBlock, DominosaBlock][] = []
     const pathsLeap: Direction[][] = []
     let cardidx = 0
-    console.log(numPairs);
     while (cardidx<dominoNums) {
       let curBlock = this.getNextBlock()!
       const paths = this.getAvaiableDirection(curBlock)
-      console.log(cardidx, 'th @avpath:', paths);
       if (paths.length===0) {
-        console.log('Stop-start#', cardidx, pathsLeap);
-        dominoLeap.forEach(p => console.log(p[0].x, p[0].y, '|', p[1].x, p[1].y))
         while (!pathsLeap.at(-1)!.length) {
           pathsLeap.pop()
           const domino = dominoLeap.pop()!
@@ -128,7 +124,6 @@ export class Play {
         const anotherPath = pickOne(pathsLeap.at(-1)!)
         let [b, bw] = dominoLeap.pop()!
         cardidx = cardidx - 1
-        console.log('block', b.x, b.y, 'choose another path', anotherPath);
         b.genDirection = anotherPath
         bw.isDominosa = false
         bw.genDirection = undefined
@@ -139,10 +134,8 @@ export class Play {
         bw.genDirection = reverseDirection(anotherPath)
         dominoLeap.push([b, bw])
         cardidx = cardidx + 1
-        console.log('Stop-end#', cardidx, pathsLeap);
       } else {
         const pickPath = pickOne(paths)
-        console.log('pick', pickPath)
         pathsLeap.push(paths)
         const bw = curBlock.getNeighbor(pickPath)!
         curBlock.isDominosa = true
