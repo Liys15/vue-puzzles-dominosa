@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDev, isPassed } from '~/state';
+import { isCheating, isPassed } from '~/state';
 import { Direction, DominosaBlock } from '~/types';
 
 const blockEl = ref()
@@ -79,7 +79,7 @@ function getClass(b: DominosaBlock) {
     baseCss = 'bg-gray-4'
   }
   let varCss = ['left-1, top-1']
-  const condition = isDev.value?props.block.genDirection:props.block.withDirection
+  const condition = isCheating.value?props.block.genDirection:props.block.withDirection
   switch (condition) {
     case 'top':
       varCss = ['top-0', 'left-0.5', 'b-bl-r-5', 'b-br-r-5']

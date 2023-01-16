@@ -1,4 +1,4 @@
-import { isDev } from "~/state"
+import { isCheating } from "~/state"
 import { GameState, Direction, DominosaBlock, SettingType } from "~/types"
 
 type State = {
@@ -180,7 +180,7 @@ export class Play {
   }
 
   changeDominosa({b, d}: {b:DominosaBlock, d:Direction}) {
-    if (this.state.value.gameState==='won' || isDev.value)
+    if (this.state.value.gameState==='won' || isCheating.value)
       return
     const bw = b.getNeighbor(d)
     let isClickExistDomino = false

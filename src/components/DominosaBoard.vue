@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDev, isPassed, showSettings } from '~/state';
+import { isCheating, isPassed, showSettings } from '~/state';
 import { Play, reverseDirection } from '~/composables';
 import { setting } from '~/store';
 import type { Direction, DominosaBlock, SettingType } from '~/types';
@@ -20,7 +20,7 @@ watch(
 )
 
 watch(
-  isDev,
+  isCheating,
   (newValue) => {
   play.dominosaCards = []
   if (newValue) {

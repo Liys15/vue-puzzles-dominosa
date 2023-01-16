@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { isDark, isDev, showHelp, showSettings } from '~/state'
+import { isDark, isCheating, showHelp, showSettings, isDev } from '~/state'
 
 const toggleDark = useToggle(isDark)
 const toggleSettings = useToggle(showSettings)
-const toggleDev = useToggle(isDev)
+const toggleCheating = useToggle(isCheating)
 
 function openHelp() {
   showHelp.value = true
@@ -23,9 +23,11 @@ function openHelp() {
         <button icon-btn mx2 @click="openHelp()">
           <div i-carbon-help />
         </button>
-        <button icon-btn mx2 @click="toggleDev()">
-          <div i-carbon-tool-kit />
-        </button>
+        <template v-if="isDev">
+          <button icon-btn mx2 @click="toggleCheating()">
+            <div i-carbon-tool-kit />
+          </button>
+        </template>
       </div>
 
       <div flex items-center>
